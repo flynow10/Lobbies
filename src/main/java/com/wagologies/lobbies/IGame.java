@@ -1,4 +1,4 @@
 package com.wagologies.lobbies;
 
-public interface Game {
+public interface IGame {
 }

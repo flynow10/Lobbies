@@ -15,7 +15,7 @@ public class Lobby implements Listener {
     @EventHandler
     public void PlayerJoin(PlayerJoinEvent event)
     {
-        event.getPlayer().sendMessage("Game");
+        event.getPlayer().sendMessage("Games");
         for (Class<?> aClass : Lobbies.getClasses()) {
             event.getPlayer().sendMessage(aClass.getCanonicalName());
         }
