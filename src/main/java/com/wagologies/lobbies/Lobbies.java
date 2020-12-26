@@ -1,22 +1,25 @@
 package com.wagologies.lobbies;
 
+import com.wagologies.lobbies.commands.Games;
+import com.wagologies.lobbies.commands.NewLobby;
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 public final class Lobbies extends JavaPlugin {
 
     private static Lobbies instance;
+    public List<Lobby> lobbies = new ArrayList<>();
 
     @Override
     public void onEnable() {
         instance = this;
-        new Lobby();
+        NewLobby newLobbyCommand = new NewLobby();
+        getCommand("newlobby").setExecutor(newLobbyCommand);
+        getCommand("newlobby").setTabCompleter(newLobbyCommand);
+        getCommand("games").setExecutor(new Games());
     }
 
     @Override
@@ -27,7 +30,12 @@ public final class Lobbies extends JavaPlugin {
     public static List<Class<?>> getClasses()
     {
         List<Class<?>> classes = new ArrayList<>();
-        for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
+        try {
+            classes.add(Class.forName("com.wagologies.bedwarsv2.game.Game"));
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        /*for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
             ClassLoader classLoader = plugin.getClass().getClassLoader();
             try {
                 Field f = ClassLoader.class.getDeclaredField("classes");
@@ -40,7 +48,7 @@ public final class Lobbies extends JavaPlugin {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
+        }*/
         return classes;
     }
 

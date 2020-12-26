@@ -1,23 +1,59 @@
 package com.wagologies.lobbies;
 
-import org.bukkit.Bukkit;
-import org.bukkit.event.EventHandler;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Lobby implements Listener {
 
-    public Lobby()
+    private List<Player> playerList = new ArrayList<>();
+
+    private Class<?> gameClass;
+    private IGame game;
+
+    public Lobby(Class<?> gameClass)
     {
-        Bukkit.getPluginManager().registerEvents(this, Lobbies.getInstance());
+        this.gameClass = gameClass;
     }
 
-    @EventHandler
-    public void PlayerJoin(PlayerJoinEvent event)
+    public void AddPlayer(Player player)
     {
-        event.getPlayer().sendMessage("Games");
-        for (Class<?> aClass : Lobbies.getClasses()) {
-            event.getPlayer().sendMessage(aClass.getCanonicalName());
+        playerList.add(player);
+    }
+
+    public void PlayerLeave(Player player)
+    {
+        if(playerList.contains(player))
+            playerList.remove(player);
+    }
+
+    public void StartGame()
+    {
+        try {
+            game = (IGame) gameClass.getConstructor().newInstance();
+        } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        game.AddPlayers(playerList);
+        game.StartGame();
+    }
+
+    public boolean isPlayerInLobby(Player player)
+    {
+        return playerList.contains(player);
+    }
+
+    public String getTypeName()
+    {
+        try {
+            return (String) gameClass.getMethod("GetName").invoke(null);
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            return "unknown";
         }
     }
+
+    public List<Player> getPlayerList() { return playerList; }
 }

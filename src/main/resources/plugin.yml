@@ -1,3 +1,10 @@
 name: Lobbies
 version: ${project.version}
 main: com.wagologies.lobbies.Lobbies
+commands:
+  newlobby:
+    usage: /newlobby <type>
+    permission: lobbies.newlobby
+  games:
+    usage: /games
+    permission: lobbies.games
